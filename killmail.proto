@@ -1,0 +1,100 @@
+/**
+ * Copyright 2013-2014 Yann Ramin
+ * atrus@stackworks.net
+ *
+ * https://github.com/theatrus
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ *limitations under the License.
+ */
+
+package killmail;
+
+option java_package = "com.eveintel.killmail";
+
+message Killmails {
+    repeated Killmail killmails = 1;
+}
+
+message Killmail {
+    optional uint64 ccpId = 1;
+    required uint64 solarSystemId = 2;
+    required uint64 killTime = 3;
+    optional uint64 moonId = 4;
+    required bytes hash = 5;
+
+    message Participant {
+        optional uint64 characterId = 1;
+        optional string characterName = 2;
+        optional uint64 corporationId = 3;
+        optional string corporationName = 4;
+        optional uint64 allianceId = 5;
+        optional string allianceName = 6;
+        optional uint64 shipTypeId = 7;
+        optional uint64 factionId = 8;
+        optional string factionName = 9;
+        optional int32 damageTaken = 10;
+        optional int32 damageDone = 11;
+        optional double securityStatus = 12;
+        optional bool finalBlow = 13;
+        optional uint64 weaponTypeId = 14;
+    }
+
+    required Participant victim = 6;
+    repeated Participant attackers = 7;
+
+    enum PricingSource {
+        EVECENTRAL = 1;
+        MANUAL = 2;
+        EVEMARKETDATA = 3;
+    }
+
+    message PricingLookup {
+        required double price = 1;
+        required uint64 pricedAt = 2;
+        optional PricingSource source = 3;
+        optional uint64 regionId = 4;
+        optional uint64 solarSystemId = 5;
+    }
+
+    message Loot {
+        required uint64 typeId = 1;
+        required uint32 flag = 2;
+        required uint32 qtyDropped = 3;
+        required uint32 qtyDestroyed = 4;
+        repeated Loot containedLoot = 5;
+        repeated PricingLookup pricing = 6;
+    }
+
+    repeated Loot loot = 8;
+
+    enum BoardType {
+        EDK = 1;
+        ZKB = 2;
+        CUSTOM = 3;
+        EVEINTEL = 4;
+    }
+
+    message KillSource {
+        required bool directApi = 1;
+        optional BoardType boardType = 2;
+        optional string boardUrl = 3;
+        optional uint64 edkInternalKillId = 4;
+        required int32 levelsOfIndirection = 5;
+        required int32 tombstone = 6;
+    }
+
+    repeated KillSource sources = 9;
+    required int32 tombstone = 10;
+    repeated PricingLookup price = 11;
+
+}
